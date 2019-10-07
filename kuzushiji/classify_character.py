@@ -21,42 +21,26 @@ from tqdm import tqdm
 import torch
 import torchvision
 from PIL import Image
+import torchvision.models as models
 
 
 class DemoModel(torch.nn.Module):
-    def __init__(self):
+    def __init__(self, model):
         super(DemoModel, self).__init__()
-        self.conv1 = torch.nn.Conv2d(in_channels=1,
-                                     out_channels=16,
-                                     kernel_size=7)
-        self.relu1 = torch.nn.ReLU(inplace=True)
-        self.maxpool1 = torch.nn.MaxPool2d(kernel_size=2)
-        self.conv2 = torch.nn.Conv2d(in_channels=16,
-                                     out_channels=128,
-                                     kernel_size=6)
-        self.relu2 = torch.nn.ReLU(inplace=True)
-        self.maxpool2 = torch.nn.MaxPool2d(kernel_size=2)
-        self.fc = torch.nn.Linear(in_features=128*8*8,
-                                  out_features=4212,
-                                  bias=True)
-        self.log_softmax = torch.nn.LogSoftmax(dim=-1)
+        self.resnet_layer = torch.nn.Sequential(*list(model.children())[:-2])
+        self.fc_ = torch.nn.Linear(2048, 4212)
 
     def forward(self, x):
-        out = self.conv1(x) # (batch, 1, 48, 48) -> (batch, 16, 42, 42)
-        out = self.relu1(out)
-        out = self.maxpool1(out) # (batch, 16, 42, 42) -> (batch, 16, 21, 21)
-        out = self.conv2(out) # (batch, 16, 21, 21) -> (batch, 128, 16, 16)
-        out = self.relu2(out)
-        out = self.maxpool2(out) # (batch, 128, 16, 16) -> (batch, 128, 8, 8)
-        out = out.view(out.size(0), -1) # (batch, 128, 8, 8) -> (batch, 8192)
-        out = self.fc(out) # (batch, 8192) -> (batch, 4212)
-        out = self.log_softmax(out)
-        return out
+        x = self.resnet_layer(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc_(x)
+        return x
 
 
-classify_model = DemoModel()
+resnet = models.resnet18(pretrained=True)
+classify_model = DemoModel(resnet)
 device = torch.device("cpu")
-classify_model.load_state_dict(torch.load('../cache/classify_model.pth', map_location=device))
+classify_model.load_state_dict(torch.load('../cache/classify_resnet18_test.pth', map_location=device))
 classify_model.eval()
 scale_resize = (48, 48)
 
@@ -72,8 +56,8 @@ def classify(image: Image, rects: list):
         char_img = image.crop((x, y, x + w, y + h))
         # Resize Character's PIL Image
         char_img = char_img.resize(scale_resize)
-        # Gray-Scale Character's PIL Image where the channel is 1
-        char_img = char_img.convert('L')
+        # # Gray-Scale Character's PIL Image where the channel is 1
+        # char_img = char_img.convert('L')
         # Convert from Character's PIL Image to Tensor
         char_img = torchvision.transforms.functional.to_tensor(char_img)
         images.append(char_img)

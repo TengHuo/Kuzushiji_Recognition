@@ -139,9 +139,6 @@ def score_page(preds, truth):
 
     for xmin, xmax, ymin, ymax, label in zip(truth_xmin, truth_xmax, truth_ymin, truth_ymax, truth_label):
         # Matching = point inside box & character same & prediction not already used
-        '''
-        Here is my modification:
-        '''
         matching = (xmin < preds_x) & (xmax > preds_x) & (ymin < preds_y) & (ymax > preds_y) & (preds_label == label) & preds_unused
         if matching.sum() == 0:
             fn += 1
