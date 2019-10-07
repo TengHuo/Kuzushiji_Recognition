@@ -27,23 +27,20 @@ import torchvision.models as models
 class DemoModel(torch.nn.Module):
     def __init__(self, model):
         super(DemoModel, self).__init__()
-        self.input = torch.nn.Conv2d(1, 3, kernel_size=(3, 3), stride=1, padding=1)
         self.resnet_layer = torch.nn.Sequential(*list(model.children())[:-2])
         self.fc_ = torch.nn.Linear(2048, 4212)
 
     def forward(self, x):
-        x = self.input(x)
         x = self.resnet_layer(x)
         x = x.view(x.size(0), -1)
         x = self.fc_(x)
-
         return x
 
 
 resnet = models.resnet18(pretrained=True)
 classify_model = DemoModel(resnet)
 device = torch.device("cpu")
-classify_model.load_state_dict(torch.load('../cache/classify_resnet18.pth', map_location=device))
+classify_model.load_state_dict(torch.load('../cache/classify_resnet18_test.pth', map_location=device))
 classify_model.eval()
 scale_resize = (48, 48)
 
@@ -59,8 +56,8 @@ def classify(image: Image, rects: list):
         char_img = image.crop((x, y, x + w, y + h))
         # Resize Character's PIL Image
         char_img = char_img.resize(scale_resize)
-        # Gray-Scale Character's PIL Image where the channel is 1
-        char_img = char_img.convert('L')
+        # # Gray-Scale Character's PIL Image where the channel is 1
+        # char_img = char_img.convert('L')
         # Convert from Character's PIL Image to Tensor
         char_img = torchvision.transforms.functional.to_tensor(char_img)
         images.append(char_img)
