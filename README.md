@@ -21,3 +21,7 @@ https://www.kaggle.com/c/kuzushiji-recognition
 1. https://zhuanlan.zhihu.com/p/64295374
 2. https://github.com/xingyizhou/CenterNet
 3. https://www.infoq.cn/article/XUDiNPviWhHhvr6x_oMv
+
+
+
+https://github.com/ranihorev/Kuzushiji_MNIST/blob/master/KujuMNIST.ipynb
