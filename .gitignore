@@ -1,6 +1,6 @@
 input/
 cache/
-
+checkpoints/
 # Created by https://www.gitignore.io/api/linux,macos,python,windows,pycharm,visualstudiocode,jupyternotebooks
 # Edit at https://www.gitignore.io/?templates=linux,macos,python,windows,pycharm,visualstudiocode,jupyternotebooks
 

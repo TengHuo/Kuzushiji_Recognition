@@ -34,18 +34,18 @@ notebooks里是主要的代码，kuzushiji文件夹中封装了一些在notebook
 
 ## Requirements
 
-
-Python 3.6.9
-Numpy
-Pandas
-Matplotlib
-PIL
-PyTorch
-Torchvision
-tqdm
-scikit-image
-scikit-learn
-Jupyter
+* Python 3.6.9
+* Numpy
+* Pandas
+* Matplotlib
+* PIL
+* Seaborn
+* PyTorch
+* Torchvision
+* tqdm
+* scikit-image
+* scikit-learn
+* Jupyter
 
 ## Getting Started
 

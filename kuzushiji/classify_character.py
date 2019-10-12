@@ -40,9 +40,9 @@ class DemoModel(torch.nn.Module):
 resnet = models.resnet18(pretrained=True)
 classify_model = DemoModel(resnet)
 device = torch.device("cpu")
-classify_model.load_state_dict(torch.load('../cache/classify_resnet18_test.pth', map_location=device))
+classify_model.load_state_dict(torch.load('../cache/classify_resnet18.pth', map_location=device))
 classify_model.eval()
-scale_resize = (48, 48)
+scale_resize = (64, 64)
 
 uc_translation = pd.read_csv("../cache/my_unicode_translation.csv")
 uc_list = uc_translation["Unicode"].values.tolist()
@@ -51,7 +51,6 @@ uc_list = uc_translation["Unicode"].values.tolist()
 def classify(image: Image, rects: list):
     images = []
     for x, y, w, h in rects:
-        # 这里的坐标应该是原始图片上的坐标（？？？？）
         # Crop as Character's PIL Image
         char_img = image.crop((x, y, x + w, y + h))
         # Resize Character's PIL Image
